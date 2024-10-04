@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\OptionController;
 use App\Http\Controllers\Admin\PropertyController;
 
 Route::get('/', function () {
@@ -9,4 +10,5 @@ Route::get('/', function () {
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::resource('property', PropertyController::class)->except('show');
+    Route::resource('option', OptionController::class)->except('show');
 });

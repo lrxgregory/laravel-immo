@@ -1,21 +1,24 @@
 @extends('admin.admin')
 
-@section('title', 'Ajouter un bien')
+@section('title', $property->exists ? 'Modifier le bien' : 'Créer un bien')
 
 @section('content')
     <div class="flex justify-around items-center">
-        <h1 class="text-center text-3xl font-bold my-6">@yield('title')</h1>
-        <a href="{{ route('admin.property.index') }}" class="text-blue-600 hover:text-blue-800">Retour</a>
+        <h1 class="text-center text-3xl font-bold my-6">
+            {{ $property->exists ? 'Modifier le bien' : 'Créer un bien' }}
+        </h1>
+        <a href="{{ route('admin.property.index') }}"
+            class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">Retour</a>
     </div>
 
-    <div class="w-6/12 mx-auto">
+    <div class="w-8/12 mx-auto bg-white rounded-lg shadow-lg p-6">
         <form
             action="{{ route($property->exists ? 'admin.property.update' : 'admin.property.store', ['property' => $property]) }}"
-            method="POST">
+            method="POST" class="space-y-6">
             @csrf
             @method($property->exists ? 'PUT' : 'POST')
 
-            <div class="flex justify-between">
+            <div class="grid grid-cols-3 gap-4">
                 @include('shared.input', [
                     'label' => 'Titre',
                     'name' => 'title',
@@ -35,7 +38,7 @@
                 ])
             </div>
 
-            <div class="flex flex-col">
+            <div>
                 @include('shared.input', [
                     'label' => 'Description',
                     'name' => 'description',
@@ -44,7 +47,7 @@
                 ])
             </div>
 
-            <div class="flex justify-between">
+            <div class="grid grid-cols-3 gap-4">
                 @include('shared.input', [
                     'label' => 'Pièces',
                     'name' => 'rooms',
@@ -64,7 +67,7 @@
                 ])
             </div>
 
-            <div class="flex justify-between">
+            <div class="grid grid-cols-3 gap-4">
                 @include('shared.input', [
                     'label' => 'Adresse',
                     'name' => 'address',
@@ -84,19 +87,33 @@
                 ])
             </div>
 
-            @include('shared.checkbox', [
-                'label' => 'Vendu',
-                'name' => 'sold ',
-                'value' => $property->sold,
-            ])
+            <div>
+                @include('shared.checkbox', [
+                    'label' => 'Vendu',
+                    'name' => 'sold',
+                    'value' => $property->sold,
+                ])
+            </div>
 
-            <button type="submit" class="bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded">
-                @if ($property->exists)
-                    Modifier
-                @else
-                    Créer
-                @endif
-            </button>
+            <div>
+                @include('shared.select', [
+                    'label' => 'Options',
+                    'name' => 'options',
+                    'value' => $property->options()->pluck('id'),
+                    'options' => $options,
+                ])
+            </div>
+
+            <div class="flex items-center justify-end space-x-3 pt-4">
+                <a href="{{ route('admin.property.index') }}"
+                    class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
+                    Annuler
+                </a>
+                <button type="submit"
+                    class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                    {{ $property->exists ? 'Modifier' : 'Créer' }}
+                </button>
+            </div>
         </form>
     </div>
 @endsection

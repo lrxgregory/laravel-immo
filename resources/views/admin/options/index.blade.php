@@ -1,16 +1,16 @@
 @extends('admin.admin')
 
-@section('title', 'Liste des biens')
+@section('title', 'Liste des options')
 
 @section('content')
     <div class="container mx-auto px-4">
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-3xl font-bold">
-                {{ 'Liste des biens' }}
+                {{ 'Liste des options' }}
             </h1>
-            <a href="{{ route('admin.property.create') }}"
+            <a href="{{ route('admin.option.create') }}"
                 class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors">
-                Ajouter un bien
+                Ajouter une option
             </a>
         </div>
 
@@ -21,19 +21,7 @@
                         <tr>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Titre
-                            </th>
-                            <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Surface
-                            </th>
-                            <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Prix
-                            </th>
-                            <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Ville
+                                Nom
                             </th>
                             <th scope="col"
                                 class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -42,37 +30,22 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        @foreach ($properties as $property)
+                        @foreach ($options as $option)
                             <tr class="hover:bg-gray-50">
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm font-medium text-gray-900">
-                                        {{ $property->title }}
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900">
-                                        {{ $property->surface }} m²
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900">
-                                        {{ number_format($property->price, 0, '.', ' ') }} €
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900">
-                                        {{ $property->city }}
+                                        {{ $option->name }}
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <div class="flex justify-end space-x-3">
-                                        <a href="{{ route('admin.property.edit', $property) }}"
+                                        <a href="{{ route('admin.option.edit', $option) }}"
                                             class="text-blue-600 hover:text-blue-900 transition-colors">
                                             Éditer
                                         </a>
-                                        <form action="{{ route('admin.property.destroy', $property) }}" method="POST"
+                                        <form action="{{ route('admin.option.destroy', $option) }}" method="POST"
                                             class="inline-block"
-                                            onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce bien ?')">
+                                            onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette option ?')">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"
@@ -90,7 +63,7 @@
         </div>
 
         <div class="mt-6">
-            {{ $properties->links() }}
+            {{ $options->links() }}
         </div>
     </div>
 @endsection

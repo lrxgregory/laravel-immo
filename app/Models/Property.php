@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -33,5 +34,10 @@ class Property extends Model
     public function getSlug(): string
     {
         return Str::slug($this->title);
+    }
+
+    public function scopeSold(Builder $builder, bool $sold = true): Builder
+    {
+        return $builder->where('sold', $sold);
     }
 }

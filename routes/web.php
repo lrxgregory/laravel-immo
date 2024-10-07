@@ -7,7 +7,7 @@ use App\Http\Controllers\HomeController;
 $idRegex = '[0-9]+';
 $slugRegex = '[a-z0-9\-]+';
 
-Route::get('/', [HomeController::class, 'index']);
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Routes pour le front
 Route::get('/properties', [App\Http\Controllers\PropertyController::class, 'index'])->name('property.index');
@@ -22,8 +22,12 @@ Route::post('/properties/{property}/contact', [App\Http\Controllers\PropertyCont
     'property' => $idRegex
 ]);
 
+Route::get('/login', [App\Http\Controllers\AuthController::class, 'login'])->name('login');
+Route::post('/login', [App\Http\Controllers\AuthController::class, 'doLogin']);
+Route::delete('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
-Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
+
+Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth']], function () {
     Route::resource('property', App\Http\Controllers\Admin\PropertyController::class)->except('show');
     Route::resource('option', OptionController::class)->except('show');
 });

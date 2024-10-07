@@ -18,6 +18,10 @@ Route::get('/properties/{slug}-{property}', [App\Http\Controllers\PropertyContro
         'slug' => $slugRegex, // Limitation sur le slug
     ]);
 
+Route::post('/properties/{property}/contact', [App\Http\Controllers\PropertyController::class, 'contact'])->name('property.contact')->where([
+    'property' => $idRegex
+]);
+
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::resource('property', App\Http\Controllers\Admin\PropertyController::class)->except('show');

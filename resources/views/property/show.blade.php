@@ -3,6 +3,8 @@
 @section('title', $property->title)
 
 @section('content')
+    @include('shared.flash')
+
     <div class="flex-grow p-6">
         <h1 class="text-4xl font-bold mb-2">{{ $property->title }}</h1>
         <h2 class="text-xl text-gray-600 mb-4">{{ $property->rooms }} pièces - {{ $property->surface }} m²</h2>
@@ -53,7 +55,8 @@
 
         <div class="mt-8">
             <h4 class="text-lg font-semibold mb-4">Intéressé par ce bien ?</h4>
-            <form action="" method="POST" class="bg-white p-6 rounded-lg shadow-md">
+            <form action="{{ route('property.contact', $property) }}" method="POST"
+                class="bg-white p-6 rounded-lg shadow-md">
                 @csrf
                 @include('shared.input', ['name' => 'firstname', 'label' => 'Prénom'])
                 @include('shared.input', ['name' => 'lastname', 'label' => 'Nom'])

@@ -4,14 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Option;
 use App\Models\Property;
+use App\Models\PropertyImage;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\Admin\PropertyFormRequest;
+use Illuminate\Http\Client\Request;
 
 class PropertyController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         return view('admin.properties.index', [
@@ -19,9 +19,6 @@ class PropertyController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return view('admin.properties.form', [
@@ -30,43 +27,94 @@ class PropertyController extends Controller
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(PropertyFormRequest $request)
     {
-        $property = Property::create($request->validated());
+        $validatedData = $request->validated();
+
+        // Créer la propriété
+        $property = Property::create($validatedData);
+
+        // Gérer les images
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                // Générer un nom unique pour chaque image
+                $imageName = time() . '_' . $image->getClientOriginalName();
+
+                // Sauvegarder l'image
+                $path = $image->storeAs('properties', $imageName, 'public');
+
+                // Créer l'entrée dans la base de données
+                $property->images()->create([
+                    'path' => $path
+                ]);
+            }
+        }
+
+        // Synchroniser les options
         $property->options()->sync($request->validated('options'));
+
         return to_route('admin.property.index')->with('success', 'Le bien a été créé avec succès');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(int $id)
     {
         return view('admin.properties.form', [
-            'property' => Property::findOrFail($id),
+            'property' => Property::with('images')->findOrFail($id),
             'options' => Option::pluck('name', 'id'),
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(PropertyFormRequest $request, Property $property)
     {
-        $property->update($request->validated());
+        $validatedData = $request->validated();
+
+        // Mettre à jour les données de la propriété
+        $property->update($validatedData);
+
+        // Gérer les nouvelles images
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                // Générer un nom unique pour chaque image
+                $imageName = time() . '_' . $image->getClientOriginalName();
+
+                // Sauvegarder l'image
+                $path = $image->storeAs('properties', $imageName, 'public');
+
+                // Créer l'entrée dans la base de données
+                $property->images()->create([
+                    'path' => $path
+                ]);
+            }
+        }
+
+        // Synchroniser les options
         $property->options()->sync($request->validated('options'));
+
+        // Suppression des images existantes si cochées
+        if ($request->filled('deleted_images')) {
+            $imagesToDelete = $property->images()->whereIn('id', $request->input('deleted_images'))->get();
+            foreach ($imagesToDelete as $image) {
+                Storage::disk('public')->delete($image->path);
+                $image->delete();
+            }
+        }
+
         return to_route('admin.property.index')->with('success', 'Le bien a été modifié avec succès');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+
     public function destroy(Property $property)
     {
+        die('ok');
+        // Supprimer toutes les images associées
+        foreach ($property->images as $image) {
+            Storage::disk('public')->delete($image->path);
+            $image->delete();
+        }
+
+        // Supprimer la propriété
         $property->delete();
+
         return to_route('admin.property.index')->with('success', 'Le bien a été supprimé avec succès');
     }
 }

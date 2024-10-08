@@ -26,8 +26,16 @@ Route::get('/login', [App\Http\Controllers\AuthController::class, 'login'])->nam
 Route::post('/login', [App\Http\Controllers\AuthController::class, 'doLogin']);
 Route::delete('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
-
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth']], function () {
+    // Important : la route de suppression d'image DOIT être AVANT la resource route
+    Route::delete('property/{property}/image/{image}', [App\Http\Controllers\Admin\PropertyController::class, 'deleteImage'])
+        ->name('property.image.delete')
+        ->where([
+            'property' => '[0-9]+',
+            'image' => '[0-9]+'
+        ]);
+
+    // Routes resource après
     Route::resource('property', App\Http\Controllers\Admin\PropertyController::class)->except('show');
     Route::resource('option', OptionController::class)->except('show');
 });

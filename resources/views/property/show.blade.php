@@ -20,6 +20,16 @@
                 <p class="text-gray-700 mb-4">{!! nl2br(e($property->description)) !!}</p>
             </div>
         </div>
+
+        @if ($property->exists && $property->images->count() > 0)
+            <div class="grid grid-cols-4 gap-4">
+                @foreach ($property->images as $image)
+                    <div class="relative">
+                        <img src="{{ Storage::url($image->path) }}" alt="" class=" object-cover rounded">
+                    </div>
+                @endforeach
+            </div>
+        @endif
         <div class="mt-4 flex">
             <div class="w-full md:w-2/3 bg-gray-100 p-4 rounded-lg shadow-md mb-4 md:mr-5">
                 <h2 class="text-lg font-semibold mb-2">Caractéristiques</h2>

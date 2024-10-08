@@ -23,7 +23,7 @@ class Property extends Model
         'city',
         'address',
         'postal_code',
-        'sold',
+        'sold'
     ];
 
     public function options(): BelongsToMany
@@ -39,5 +39,10 @@ class Property extends Model
     public function scopeSold(Builder $builder, bool $sold = true): Builder
     {
         return $builder->where('sold', $sold);
+    }
+
+    public function images()
+    {
+        return $this->hasMany(PropertyImage::class);
     }
 }

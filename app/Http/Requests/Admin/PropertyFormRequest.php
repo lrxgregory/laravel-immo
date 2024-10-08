@@ -33,7 +33,19 @@ class PropertyFormRequest extends FormRequest
             'address' => 'required|string|min:8|max:255',
             'postal_code' => 'required|min:4|max:255',
             'sold' => 'nullable|boolean',
-            'options' => 'required|array|exists:options,id',
+            'options' => 'array|exists:options,id',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'images' => ['array', 'max:5']
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'images.max' => 'Vous ne pouvez pas upload plus de 5 images',
+            'images.*.image' => 'Les fichiers doivent être des images',
+            'images.*.mimes' => 'Les images doivent être au format : jpeg, png, jpg ou gif',
+            'images.*.max' => 'Les images ne doivent pas dépasser 2Mo'
         ];
     }
 }

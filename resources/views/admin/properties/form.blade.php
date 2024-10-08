@@ -14,7 +14,7 @@
     <div class="w-8/12 mx-auto bg-white rounded-lg shadow-lg p-6">
         <form
             action="{{ route($property->exists ? 'admin.property.update' : 'admin.property.store', ['property' => $property]) }}"
-            method="POST" class="space-y-6">
+            method="POST" enctype="multipart/form-data" class="space-y-6">
             @csrf
             @method($property->exists ? 'PUT' : 'POST')
 
@@ -85,6 +85,36 @@
                     'name' => 'postal_code',
                     'value' => $property->postal_code,
                 ])
+            </div>
+
+            <div>
+                @include('shared.input', [
+                    'label' => 'Images',
+                    'type' => 'file',
+                    'name' => 'images[]',
+                    'multiple' => true,
+                    'accept' => 'image/*',
+                ])
+
+                @if ($property->exists && $property->images->count() > 0)
+                    <div class="grid grid-cols-4 gap-4">
+                        @foreach ($property->images as $image)
+                            <div class="relative">
+                                <img src="{{ Storage::url($image->path) }}" alt=""
+                                    class="w-full h-32 object-cover rounded">
+                                <label class="absolute top-0 right-0 p-1">
+                                    <input type="checkbox" name="deleted_images[]" value="{{ $image->id }}">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+
+                                </label>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
+
             </div>
 
             <div>

@@ -4,11 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Option;
 use App\Models\Property;
-use App\Models\PropertyImage;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\Admin\PropertyFormRequest;
-use Illuminate\Http\Client\Request;
 
 class PropertyController extends Controller
 {

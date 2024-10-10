@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use App\Models\Option;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\Property;
 use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
@@ -17,21 +16,26 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        user::create([
+        User::create([
             'name' => 'Admin',
             'email' => 'lrxgregory@gmail.com',
             'email_verified_at' => now(),
             'password' => Hash::make('password'),
             'remember_token' => Str::random(10),
+            'role' => 'admin'
         ]);
-        User::factory(10)->create();
+
+        $users = User::factory(10)->create(['role' => 'user']);
+
+
         $options = Option::factory(10)->create();
         Property::factory(50)
+            ->state(function () use ($users) {
+                return [
+                    'user_id' => $users->random()->id,
+                ];
+            })
             ->hasAttached($options->random(3))
             ->create();
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
     }
 }

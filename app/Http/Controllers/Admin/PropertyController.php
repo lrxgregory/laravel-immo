@@ -7,9 +7,12 @@ use App\Models\Property;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\Admin\PropertyFormRequest;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class PropertyController extends Controller
 {
+    use AuthorizesRequests;
+
     public function index()
     {
         return view('admin.properties.index', [
@@ -64,6 +67,8 @@ class PropertyController extends Controller
 
     public function update(PropertyFormRequest $request, Property $property)
     {
+        $this->authorize('update', $property);
+
         $validatedData = $request->validated();
 
         // Mettre à jour les données de la propriété
@@ -103,7 +108,6 @@ class PropertyController extends Controller
 
     public function destroy(Property $property)
     {
-        die('ok');
         // Supprimer toutes les images associées
         foreach ($property->images as $image) {
             Storage::disk('public')->delete($image->path);

@@ -70,16 +70,18 @@
                                             class="text-blue-600 hover:text-blue-900 transition-colors">
                                             Éditer
                                         </a>
-                                        <form action="{{ route('admin.property.destroy', $property) }}" method="POST"
-                                            class="inline-block"
-                                            onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce bien ?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit"
-                                                class="text-red-600 hover:text-red-900 transition-colors">
-                                                Supprimer
-                                            </button>
-                                        </form>
+                                        @can('delete', $property)
+                                            <form action="{{ route('admin.property.destroy', $property) }}" method="POST"
+                                                class="inline-block"
+                                                onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce bien ?')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit"
+                                                    class="text-red-600 hover:text-red-900 transition-colors">
+                                                    Supprimer
+                                                </button>
+                                            </form>
+                                        @endcan
                                     </div>
                                 </td>
                             </tr>

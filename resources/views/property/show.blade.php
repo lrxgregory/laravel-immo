@@ -64,7 +64,7 @@
         </div>
 
         <div class="mt-8">
-            <h4 class="text-lg font-semibold mb-4">Intéressé par ce bien ?</h4>
+            <h4 class="text-lg font-semibold mb-4">{{ __('Interested by this property ?') }}</h4>
             <form action="{{ route('property.contact', $property) }}" method="POST"
                 class="bg-white p-6 rounded-lg shadow-md">
                 @csrf

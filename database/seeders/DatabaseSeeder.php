@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Option;
 use App\Models\Property;
 use Illuminate\Support\Str;
+use App\Models\PropertyImage;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -29,6 +30,7 @@ class DatabaseSeeder extends Seeder
 
 
         $options = Option::factory(10)->create();
+
         Property::factory(50)
             ->state(function () use ($users) {
                 return [
@@ -36,6 +38,10 @@ class DatabaseSeeder extends Seeder
                 ];
             })
             ->hasAttached($options->random(3))
+            ->afterCreating(function (Property $property) {
+                PropertyImage::factory()
+                    ->create(['property_id' => $property->id]);
+            })
             ->create();
     }
 }

@@ -5,9 +5,9 @@
 @section('content')
     <div class="flex justify-between items-center mb-6">
         <form action="" method="GET" class="">
-            <input type="number" name="surface" placeholder="Surface min" value="{{ $input['surface'] ?? '' }}">
-            <input type="number" name="rooms" placeholder="Nombre de pièces min" value="{{ $input['rooms'] ?? '' }}">
-            <input type="number" name="price" placeholder="Budget max" value="{{ $input['price'] ?? '' }}">
+            <input type="number" name="surface" placeholder="Surface min" value="{{ request()->input('surface') }}">
+            <input type="number" name="rooms" placeholder="Nombre de pièces min" value="{{ request()->input('rooms') }}">
+            <input type="number" name="price" placeholder="Budget max" value="{{ request()->input('price') }}">
             <button>Filtrer</button>
         </form>
     </div>

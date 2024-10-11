@@ -12,18 +12,32 @@ class PropertyController extends Controller
 {
     public function index(SearchPropertiesRequest $request)
     {
+        // Initialisation de la requête pour les propriétés
         $query = Property::query()->orderBy('created_at', 'desc');
-        if ($request->validated('price')) {
-            $query->where('price', '>=', $request->validated('price'));
+
+        // Récupération des valeurs des filtres si elles existent
+        $price = $request->input('price');
+        $surface = $request->input('surface');
+        $rooms = $request->input('rooms');
+
+        // Appliquer les filtres seulement si des valeurs sont fournies
+        if (!is_null($price)) {
+            $query->where('price', '<=', $price); // Filtre pour un budget max
         }
-        if ($request->validated('surface')) {
-            $query->where('surface', '>=', $request->validated('surface'));
+        if (!is_null($surface)) {
+            $query->where('surface', '>=', $surface); // Filtre pour une surface min
         }
-        if ($request->validated('rooms')) {
-            $query->where('rooms', '>=', $request->validated('rooms'));
+        if (!is_null($rooms)) {
+            $query->where('rooms', '>=', $rooms); // Filtre pour le nombre de pièces min
         }
-        return view('property.index', ['properties' => $query->paginate(16)]);
+
+        // Retourne les propriétés paginées
+        return view('property.index', [
+            'properties' => $query->paginate(16),
+            'input' => $request->all() // Passer les valeurs d'entrée au front-end
+        ]);
     }
+
 
     public function show(string $slug, Property $property)
     {

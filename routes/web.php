@@ -39,3 +39,5 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth']], 
     Route::resource('property', App\Http\Controllers\Admin\PropertyController::class)->except('show');
     Route::resource('option', OptionController::class)->except('show');
 });
+
+Route::get('/api/property', [App\Http\Controllers\Api\PropertyController::class, 'index'])->name('api.property.index');
